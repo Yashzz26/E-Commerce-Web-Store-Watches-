@@ -1,7 +1,5 @@
 # E-Commerce-Web-Store-Watches-
-# Chronix - A Modern E-Commerce Watch Store
 
-![Chronix Homepage Mockup](https://i.imgur.com/r62bS7N.png)
 
 Welcome to Chronix, a beautifully designed, front-end e-commerce experience for a modern watch store. This project was built from the ground up using only **HTML, CSS, and Vanilla JavaScript**, demonstrating core web development principles without reliance on frameworks or backend services. All data, including the shopping cart and user preferences, is managed client-side using `localStorage`.
 
