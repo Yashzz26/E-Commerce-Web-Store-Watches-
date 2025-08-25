@@ -55,4 +55,4 @@ The project is organized into a clear and logical file structure:
 ├── order.html          # Order Confirmation Page
 ├── style.css           # All CSS styles
 ├── script.js           # All JavaScript logic
-└── /images/            # Product images and assets
+└── /images/            # Product images and assets..
