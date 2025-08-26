@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Chronix</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="main-content">
+        <header>
+             <nav class="navbar">
+                <a href="index.html" class="logo">Chronix</a>
+             </nav>
+        </header>
+
+        <main class="checkout-main">
+            <h2>Checkout</h2>
+            <form id="checkout-form" class="checkout-form">
+                <h3>Payment Method</h3>
+                <div class="payment-options">
+                    <label>
+                        <input type="radio" name="payment" value="cod" checked> Cash on Delivery
+                    </label>
+                    <label>
+                        <input type="radio" name="payment" value="upi"> Pay Online (UPI)
+                    </label>
+                </div>
+                <button type="submit" class="btn">Place Order</button>
+            </form>
+        </main>
+    </div>
+
+    <div id="qr-code-overlay" class="overlay-container">
+        <div class="overlay-box">
+            <h3>Scan to Pay with UPI</h3>
+            <img src="/images/qr.jpg" alt="QR Code for UPI Payment">
+            <p>After scanning, confirm your order below.</p>
+            <button id="qr-place-order-btn" class="btn">Place Order</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
