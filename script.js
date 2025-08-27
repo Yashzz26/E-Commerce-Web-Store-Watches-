@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
       image: "https://m.media-amazon.com/images/I/61fDRIfPQEL.jpg",
       category: "Smart Watch",
       description:
-        "Samsung Galaxy Watch6 LTE (44mm, Graphite, Compatible with Android only) | Introducing BP & ECG Features.<br>A stylish and powerful smartwatch with advanced health tracking.</br>",
+        "A stylish and powerful smartwatch with advanced health tracking.",
       reviews: "1,200 reviews",
       buyers: "5k+ buyers",
     },
@@ -77,12 +77,15 @@ document.addEventListener("DOMContentLoaded", () => {
   let cart = JSON.parse(localStorage.getItem("chronixCart")) || [];
   let userProfile =
     JSON.parse(localStorage.getItem("chronixUserProfile")) || {};
+  let allReviews = JSON.parse(localStorage.getItem("chronixReviews")) || [];
 
   // --- GENERAL HELPER FUNCTIONS ---
   const saveCart = () =>
     localStorage.setItem("chronixCart", JSON.stringify(cart));
   const saveProfile = () =>
     localStorage.setItem("chronixUserProfile", JSON.stringify(userProfile));
+  const saveReviews = () =>
+    localStorage.setItem("chronixReviews", JSON.stringify(allReviews));
 
   const checkAuth = () => {
     if (!sessionStorage.getItem("loggedIn") && currentPath !== "login.html") {
@@ -127,42 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
       container.innerHTML = `<a href="profile.html">Hello, Guest</a>`;
     }
   };
-
-  // in script.js
-
-  // Deal of the Day countdown timer logic
-  const dealSection = document.getElementById("deal-of-the-day-section");
-  if (dealSection) {
-    // THIS IS THE LINE YOU WILL EDIT
-   let dealEndTime = new Date(2025, 11, 31, 22, 0, 0); // December 31, 2025, 10:00 PM
-
-    const countdownInterval = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = dealEndTime - now;
-
-      if (distance < 0) {
-        clearInterval(countdownInterval);
-        dealSection.style.display = "none"; // Hide section when timer ends
-        return;
-      }
-
-      const hours = Math.floor(
-        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      document.getElementById("hours").innerText = hours
-        .toString()
-        .padStart(2, "0");
-      document.getElementById("minutes").innerText = minutes
-        .toString()
-        .padStart(2, "0");
-      document.getElementById("seconds").innerText = seconds
-        .toString()
-        .padStart(2, "0");
-    }, 1000);
-  }
 
   // --- INITIALIZATION ---
   checkAuth();
@@ -237,38 +204,48 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 2. INDEX PAGE (REVISED WITH NEW BUTTONS)
+  // 2. INDEX PAGE (Homepage with Filters, Deal, and Ratings)
   if (currentPath === "index.html" || currentPath === "") {
     const productGrid = document.getElementById("product-grid");
     const filterBtns = document.querySelectorAll(".filter-btn");
     const sortSelect = document.getElementById("sort-select");
 
     if (productGrid && filterBtns.length > 0 && sortSelect) {
-      // REVISED: displayProducts function now includes both buttons
       const displayProducts = (products) => {
         productGrid.innerHTML = "";
         products.forEach((p) => {
+          const productReviews = allReviews.filter(
+            (review) => review.productId === p.id
+          );
+          const avgRating =
+            productReviews.length > 0
+              ? productReviews.reduce((sum, review) => sum + review.rating, 0) /
+                productReviews.length
+              : 0;
+          const totalReviews = productReviews.length;
           productGrid.innerHTML += `
                         <div class="product-card">
                             <img src="${p.image}" alt="${p.name}">
                             <div class="product-card-content">
                                 <h3>${p.name}</h3>
-                                <p class="price">₹${p.price.toFixed(2)}</p>
-                                <div class="card-actions">
-                                    <button class="add-to-cart-btn-grid" data-id="${
-                                      p.id
-                                    }">Add to Cart</button>
-                                    <a href="product.html?id=${
-                                      p.id
-                                    }" class="view-details-btn">View Details</a>
+                                <div class="average-rating-display">
+                                    <div class="stars-outer">
+                                        <div class="stars-inner" style="width: ${
+                                          (avgRating / 5) * 100
+                                        }%"></div>
+                                    </div>
+                                    <span class="rating-text">(${totalReviews})</span>
                                 </div>
+                                <p class="price">₹${p.price.toFixed(2)}</p>
+                                <a href="product.html?id=${
+                                  p.id
+                                }" class="view-details-btn">View Details</a>
                             </div>
                         </div>`;
         });
       };
 
       const applyFiltersAndSort = () => {
-        // ... (This function's logic is correct and remains the same)
         const category =
           document.querySelector(".filter-btn.active").dataset.category;
         const sort = sortSelect.value;
@@ -288,58 +265,179 @@ document.addEventListener("DOMContentLoaded", () => {
           applyFiltersAndSort();
         })
       );
-
       sortSelect.addEventListener("change", applyFiltersAndSort);
+      applyFiltersAndSort();
+    }
 
-      // NEW: Add event listener for the new "Add to Cart" buttons on the grid
-      productGrid.addEventListener("click", (e) => {
-        if (e.target.classList.contains("add-to-cart-btn-grid")) {
-          const productId = parseInt(e.target.dataset.id);
-          const existingItem = cart.find((item) => item.id === productId);
-
-          if (existingItem) {
-            existingItem.quantity++;
-          } else {
-            cart.push({ id: productId, quantity: 1 });
-          }
-          saveCart();
-          updateCartCount();
-          showToast("Item added to cart!");
+    const dealSection = document.getElementById("deal-of-the-day-section");
+    if (dealSection) {
+      let dealEndTime = new Date();
+      dealEndTime.setHours(23, 59, 59, 999);
+      const countdownInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = dealEndTime - now;
+        if (distance < 0) {
+          clearInterval(countdownInterval);
+          dealSection.style.display = "none";
+          return;
         }
-      });
-
-      applyFiltersAndSort(); // Initial render of products
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById("hours").innerText = hours
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("minutes").innerText = minutes
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("seconds").innerText = seconds
+          .toString()
+          .padStart(2, "0");
+      }, 1000);
     }
   }
+
   // 3. PRODUCT DETAIL PAGE
   if (currentPath === "product.html") {
-    const params = new URLSearchParams(window.location.search),
-      productId = parseInt(params.get("id")),
-      product = allProducts.find((p) => p.id === productId),
-      container = document.getElementById("product-detail-container");
+    const params = new URLSearchParams(window.location.search);
+    const productId = parseInt(params.get("id"));
+    const product = allProducts.find((p) => p.id === productId);
+    const container = document.getElementById("product-detail-container");
+
     if (product && container) {
-      container.innerHTML = `<div class="product-image-gallery"><img src="${
-        product.image
-      }" alt="${product.name}"></div><div class="product-info"><h1>${
-        product.name
-      }</h1><p class="price">₹${(product.dealPrice || product.price).toFixed(
-        2
-      )}</p><p>${
-        product.description
-      }</p><div class="product-actions"><button class="add-to-cart-btn" data-id="${
-        product.id
-      }">Add to Cart</button><a href="checkout.html" class="buy-now-btn">Buy Now</a></div></div>`;
-      container
-        .querySelector(".add-to-cart-btn")
-        .addEventListener("click", (e) => {
-          const id = parseInt(e.target.dataset.id),
-            existingItem = cart.find((item) => item.id === id);
-          if (existingItem) existingItem.quantity++;
-          else cart.push({ id, quantity: 1 });
-          saveCart();
-          updateCartCount();
-          showToast("Item added to cart!");
+      const renderProductInfo = () => {
+        const productReviews = allReviews.filter(
+          (review) => review.productId === productId
+        );
+        const avgRating =
+          productReviews.length > 0
+            ? productReviews.reduce((sum, review) => sum + review.rating, 0) /
+              productReviews.length
+            : 0;
+        const totalReviews = productReviews.length;
+
+        container.innerHTML = `
+                    <div class="product-image-gallery"><img src="${
+                      product.image
+                    }" alt="${product.name}"></div>
+                    <div class="product-info">
+                        <h1>${product.name}</h1>
+                        <div class="average-rating-display">
+                            <div class="stars-outer"><div class="stars-inner" style="width: ${
+                              (avgRating / 5) * 100
+                            }%"></div></div>
+                            <span class="rating-text">${avgRating.toFixed(
+                              1
+                            )} out of 5 (${totalReviews} reviews)</span>
+                        </div>
+                        <p class="price">₹${(
+                          product.dealPrice || product.price
+                        ).toFixed(2)}</p>
+                        <p>${product.description}</p>
+                        <div class="product-actions"><button class="add-to-cart-btn" data-id="${
+                          product.id
+                        }">Add to Cart</button><a href="checkout.html" class="buy-now-btn">Buy Now</a></div>
+                    </div>`;
+
+        container
+          .querySelector(".add-to-cart-btn")
+          .addEventListener("click", (e) => {
+            const id = parseInt(e.target.dataset.id);
+            const existingItem = cart.find((item) => item.id === id);
+            if (existingItem) {
+              existingItem.quantity++;
+            } else {
+              cart.push({ id: id, quantity: 1 });
+            }
+            saveCart();
+            updateCartCount();
+            showToast("Item added to cart!");
+          });
+      };
+
+      const reviewsList = document.getElementById("reviews-list");
+      const reviewForm = document.getElementById("review-form");
+
+      if (reviewsList && reviewForm) {
+        const starRatingInput = reviewForm.querySelector(".star-rating-input");
+        const ratingValueInput = reviewForm.querySelector("#rating-value");
+        const stars = starRatingInput.querySelectorAll("i");
+
+        const renderReviews = () => {
+          reviewsList.innerHTML = "";
+          const currentProductReviews = allReviews.filter(
+            (review) => review.productId === productId
+          );
+          if (currentProductReviews.length === 0) {
+            reviewsList.innerHTML = "<p>No reviews yet. Be the first!</p>";
+            return;
+          }
+          currentProductReviews.forEach((review) => {
+            reviewsList.innerHTML += `<div class="review-card"><div class="review-card-header"><span class="reviewer-info">${
+              review.name
+            }</span><span class="review-stars">${"★".repeat(
+              review.rating
+            )}${"☆".repeat(
+              5 - review.rating
+            )}</span></div><p class="review-body">${review.text}</p></div>`;
+          });
+        };
+
+        const updateStarDisplay = (rating) => {
+          stars.forEach((star) => {
+            star.classList.remove("fa-solid");
+            star.classList.add("fa-regular");
+            if (star.dataset.value <= rating) {
+              star.classList.remove("fa-regular");
+              star.classList.add("fa-solid");
+            }
+          });
+        };
+
+        starRatingInput.addEventListener("mouseover", (e) => {
+          if (e.target.tagName === "I") {
+            updateStarDisplay(e.target.dataset.value);
+          }
         });
+
+        starRatingInput.addEventListener("mouseout", () => {
+          updateStarDisplay(ratingValueInput.value);
+        });
+
+        starRatingInput.addEventListener("click", (e) => {
+          if (e.target.tagName === "I") {
+            ratingValueInput.value = e.target.dataset.value;
+            updateStarDisplay(ratingValueInput.value);
+          }
+        });
+
+        reviewForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const newReview = {
+            productId: productId,
+            name: document.getElementById("reviewer-name").value,
+            rating: parseInt(ratingValueInput.value),
+            text: document.getElementById("review-text").value,
+          };
+          if (newReview.rating === 0) {
+            showToast("Please select a star rating.", "error");
+            return;
+          }
+          allReviews.push(newReview);
+          saveReviews();
+          showToast("Thank you for your review!", "success");
+          reviewForm.reset();
+          ratingValueInput.value = 0;
+          updateStarDisplay(0);
+          renderProductInfo(); // Re-render the top section to update average
+          renderReviews(); // Re-render the reviews list
+        });
+
+        renderProductInfo();
+        renderReviews();
+      }
     } else if (container) {
       container.innerHTML = "<h2>Product not found</h2>";
     }
@@ -405,16 +503,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // 5. CHECKOUT PAGE
   if (currentPath === "checkout.html") {
     const checkoutForm = document.getElementById("checkout-form");
-    const paymentOptions = document.querySelectorAll('input[name="payment"]');
     const upiOverlay = document.getElementById("upi-payment-overlay");
     const confirmOrderBtn = document.getElementById("confirm-order-btn");
-
-    if (
-      checkoutForm &&
-      paymentOptions.length > 0 &&
-      upiOverlay &&
-      confirmOrderBtn
-    ) {
+    if (checkoutForm && upiOverlay && confirmOrderBtn) {
       const placeOrder = () => {
         if (upiOverlay.classList.contains("show")) {
           upiOverlay.classList.remove("show");
@@ -450,13 +541,11 @@ document.addEventListener("DOMContentLoaded", () => {
       addressInput = document.getElementById("address"),
       photoInput = document.getElementById("profile-photo-input"),
       photoPreview = document.getElementById("profile-photo-preview");
-
     if (form) {
       nameInput.value = userProfile.name || "";
       emailInput.value = userProfile.email || "";
       addressInput.value = userProfile.address || "";
       if (userProfile.photo) photoPreview.src = userProfile.photo;
-
       photoInput.addEventListener("change", () => {
         const file = photoInput.files[0];
         if (file) {
@@ -467,7 +556,6 @@ document.addEventListener("DOMContentLoaded", () => {
           reader.readAsDataURL(file);
         }
       });
-
       form.addEventListener("submit", (e) => {
         e.preventDefault();
         userProfile.name = nameInput.value;
@@ -477,14 +565,6 @@ document.addEventListener("DOMContentLoaded", () => {
         saveProfile();
         showToast("Profile updated successfully!", "success");
         updateUserGreeting();
-
-        // ===== NEW LINES ADDED HERE =====
-        // This will redirect to the homepage after a 1.5 second delay,
-        // giving the user time to see the "success" message.
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 1500);
-        // =================================
       });
     }
   }

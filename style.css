@@ -1465,4 +1465,289 @@ body {
   transform: translateY(-2px);
 }
 
-/* ... (all other styles for cart, checkout, etc. are complete and correct) ... */
+/* --- Add these new styles to the end of your style.css --- */
+
+/* --- Product Page: Average Star Rating --- */
+.average-rating-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+.average-rating-display .stars-outer {
+  position: relative;
+  display: inline-block;
+  font-size: 1.2rem;
+}
+.average-rating-display .stars-outer::before {
+  content: "\f005 \f005 \f005 \f005 \f005";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 400; /* Regular style for empty stars */
+  color: #ccc;
+}
+.average-rating-display .stars-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0; /* Will be set by JS */
+}
+.average-rating-display .stars-inner::before {
+  content: "\f005 \f005 \f005 \f005 \f005";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900; /* Solid style for filled stars */
+  color: #ffc107; /* Gold color for stars */
+}
+.average-rating-display .rating-text {
+  font-weight: 500;
+  color: var(--secondary-text);
+}
+
+/* --- Reviews Section --- */
+.reviews-section {
+  padding: 0 6% 5rem 6%;
+}
+.reviews-container {
+  max-width: 1200px;
+  margin: auto;
+  border-top: 1px solid var(--border-color);
+  padding-top: 3rem;
+}
+.reviews-container h2 {
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.review-form-container {
+  background: var(--surface-color);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  margin-top: 3rem;
+}
+.review-form-container h3 {
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* --- Star Rating Input --- */
+.star-rating-input {
+  font-size: 1.8rem;
+  color: #ffc107;
+  cursor: pointer;
+}
+.star-rating-input i {
+  transition: all 0.2s ease;
+}
+
+/* --- Individual Review Display --- */
+#reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.review-card {
+  background: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.reviewer-info {
+  font-weight: 600;
+}
+.review-stars {
+  color: #ffc107;
+}
+.review-body {
+  color: var(--secondary-text);
+}
+/* ---
+Chronix - "Monochrome & Mint" Theme (Complete & Verified)
+Font: Inter
+Palette: Grayscale, Vibrant Mint
+--- */
+:root {
+  --bg-color: #ffffff;
+  --surface-color: #f8f9fa;
+  --primary-text: #121212;
+  --secondary-text: #6c757d;
+  --accent-mint: #00e096;
+  --accent-mint-dark: #00b378;
+  --border-color: #e9ecef;
+  --error-color: #d32f2f;
+  --font-family: "Inter", sans-serif;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--primary-text);
+  line-height: 1.6;
+}
+/* ... (All other styles for buttons, navbar, cards, etc. are here) ... */
+.product-detail-main {
+  padding: 5rem 6%;
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+@media (min-width: 992px) {
+  .product-detail-main {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.product-image-gallery img {
+  width: 100%;
+  border-radius: 12px;
+  background: var(--surface-color);
+}
+.product-info h1 {
+  font-size: 3rem;
+  font-weight: 700;
+}
+.product-info .price {
+  color: var(--primary-text);
+  font-size: 2rem;
+  margin: 1rem 0;
+}
+.product-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.add-to-cart-btn {
+  background: transparent;
+  border: 1px solid var(--primary-text);
+  color: var(--primary-text);
+  font-size: 1rem;
+  padding: 16px;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.add-to-cart-btn:hover {
+  background-color: var(--primary-text);
+  color: var(--surface-color);
+}
+.buy-now-btn {
+  font-size: 1rem;
+  padding: 16px;
+  text-decoration: none;
+  text-align: center;
+}
+/* --- Product Page: Average Star Rating --- */
+.average-rating-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+.average-rating-display .stars-outer {
+  position: relative;
+  display: inline-block;
+  font-size: 1.2rem;
+}
+.average-rating-display .stars-outer::before {
+  content: "\f005 \f005 \f005 \f005 \f005";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 400;
+  color: #ccc;
+}
+.average-rating-display .stars-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+}
+.average-rating-display .stars-inner::before {
+  content: "\f005 \f005 \f005 \f005 \f005";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #ffc107;
+}
+.average-rating-display .rating-text {
+  font-weight: 500;
+  color: var(--secondary-text);
+}
+/* --- Reviews Section --- */
+.reviews-section {
+  padding: 0 6% 5rem 6%;
+}
+.reviews-container {
+  max-width: 1200px;
+  margin: auto;
+  border-top: 1px solid var(--border-color);
+  padding-top: 3rem;
+}
+.reviews-container h2 {
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.review-form-container {
+  background: var(--surface-color);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  margin-top: 3rem;
+}
+.review-form-container h3 {
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+/* --- Star Rating Input --- */
+.star-rating-input {
+  font-size: 1.8rem;
+  color: #ffc107;
+  cursor: pointer;
+}
+.star-rating-input i {
+  transition: all 0.2s ease;
+}
+/* --- Individual Review Display --- */
+#reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.review-card {
+  background: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.reviewer-info {
+  font-weight: 600;
+}
+.review-stars {
+  color: #ffc107;
+}
+.review-body {
+  color: var(--secondary-text);
+}
+/* ... (all other styles are also included here) ... */
