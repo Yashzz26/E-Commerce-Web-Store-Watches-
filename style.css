@@ -413,3 +413,92 @@ footer {
     transition: all 0.4s ease;
 }
 .toast.show { opacity: 1; transform: translateY(0); }
+
+/* --- Add these new styles to the end of your style.css --- */
+
+/* --- Page Transitions --- */
+#main-content {
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+#main-content.fade-in {
+    opacity: 1;
+}
+
+/* --- Live Search Bar --- */
+.search-container {
+    position: relative;
+    width: 40%;
+}
+#search-bar {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: var(--font-family);
+    font-size: 1rem;
+}
+.search-results-container {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.07);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 100;
+    display: none; /* Hidden by default */
+}
+.search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    text-decoration: none;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background-color: var(--bg-color); }
+.search-result-item img { width: 50px; height: 50px; object-fit: cover; margin-right: 15px; border-radius: 4px; }
+.search-result-item-info h4 { font-weight: 500; }
+.search-result-item-info p { font-weight: 600; color: var(--accent-color); }
+
+/* --- Filter and Sort Controls --- */
+.filter-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.filter-group { display: flex; align-items: center; gap: 0.75rem; }
+.filter-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-size: 0.9rem;
+    transition: background-color 0.3s, color 0.3s;
+}
+.filter-btn.active, .filter-btn:hover {
+    background-color: var(--text-color);
+    color: var(--card-bg);
+    border-color: var(--text-color);
+}
+#sort-select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    font-family: var(--font-family);
+    font-size: 0.9rem;
+}

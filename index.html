@@ -1,49 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chronix - Your Time, Your Style</title>
+    <title>Chronix - Our Collection</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="main-content">
         <header>
             <nav class="navbar">
-                <a href="index.html" class="logo">Chronix</a>
+                <a href="index.html" class="logo">Chronix<span>.</span></a>
+                
+                <div class="search-container">
+                    <input type="text" id="search-bar" placeholder="Search for watches...">
+                    <div id="search-results" class="search-results-container"></div>
+                </div>
                 <div class="nav-icons">
-                    <a href="cart.html" class="sticky-cart-icon" aria-label="Shopping Cart">
-                        <i class="fa fa-shopping-cart"></i>
-                        <span id="cart-item-count">0</span>
-                    </a>
+                    <a href="cart.html" class="sticky-cart-icon"><i class="fa fa-shopping-cart"></i><span id="cart-item-count">0</span></a>
                     <button id="logout-btn" class="btn-logout">Logout</button>
                 </div>
             </nav>
         </header>
 
         <main>
-            <section class="hero-banner">
-                <div class="hero-content">
-                    <h1>Welcome, Admin!</h1>
-                    <p>Explore our exclusive collection of timepieces.</p>
-                </div>
-            </section>
-
             <section class="home-section">
                 <h2>Our Collection</h2>
+                
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <span>Category:</span>
+                        <button class="filter-btn active" data-category="all">All</button>
+                        <button class="filter-btn" data-category="Analog">Analog</button>
+                        <button class="filter-btn" data-category="Smart Watch">Smart</button>
+                        <button class="filter-btn" data-category="Luxury">Luxury</button>
+                    </div>
+                    <div class="filter-group">
+                        <label for="sort-select">Sort by:</label>
+                        <select id="sort-select">
+                            <option value="default">Default</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                        </select>
+                    </div>
+                </div>
                 <div id="product-grid" class="product-grid">
                     </div>
             </section>
         </main>
-
-        <footer>
-            <p>&copy; 2025 Chronix. All rights reserved.</p>
-        </footer>
     </div>
+    <div id="toast-container"></div>
     <script src="script.js"></script>
 </body>
 </html>
