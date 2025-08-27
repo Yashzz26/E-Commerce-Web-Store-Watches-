@@ -1281,3 +1281,188 @@ footer {
   opacity: 1;
   transform: translateY(0);
 }
+/* ---
+Chronix - "Monochrome & Mint" Theme (Final Polished Version)
+Font: Inter
+Palette: Grayscale, Vibrant Mint
+--- */
+
+:root {
+  --bg-color: #ffffff;
+  --surface-color: #f8f9fa;
+  --primary-text: #121212;
+  --secondary-text: #6c757d;
+  --accent-mint: #00e096;
+  --accent-mint-dark: #00b378;
+  --border-color: #e9ecef;
+  --error-color: #d32f2f;
+  --font-family: "Inter", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--primary-text);
+  line-height: 1.6;
+}
+
+/* ... (all other styles from login to footer are complete and correct) ... */
+
+/* --- TOAST NOTIFICATION (REVISED & ENHANCED) --- */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.toast {
+  background-color: var(--primary-text);
+  color: var(--surface-color);
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.21, 1.02, 0.73, 1); /* Smooth bounce effect */
+  transform: translateX(100%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Different toast types for different messages */
+.toast.success {
+  background-color: #00c851; /* A nice success green */
+  color: white;
+}
+.toast.error {
+  background-color: var(--error-color);
+  color: white;
+}
+/* ---
+Chronix - "Monochrome & Mint" Theme (Final Polished Version)
+Font: Inter
+Palette: Grayscale, Vibrant Mint
+--- */
+
+:root {
+  --bg-color: #ffffff;
+  --surface-color: #f8f9fa;
+  --primary-text: #121212;
+  --secondary-text: #6c757d;
+  --accent-mint: #00e096;
+  --accent-mint-dark: #00b378;
+  --border-color: #e9ecef;
+  --error-color: #d32f2f;
+  --font-family: "Inter", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--primary-text);
+  line-height: 1.6;
+}
+
+/* ... (all other styles from login to product detail page are complete and correct) ... */
+
+/* --- Product Card --- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+}
+.product-card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+  display: flex; /* Added for layout */
+  flex-direction: column; /* Added for layout */
+}
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+}
+.product-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  padding: 1.5rem;
+}
+.product-card-content {
+  padding: 0 1.5rem 1.5rem;
+  display: flex; /* Added for layout */
+  flex-direction: column; /* Added for layout */
+  flex-grow: 1; /* Allows this section to fill available space */
+}
+.product-card-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-text);
+  margin-bottom: 0.5rem;
+}
+.product-card-content .price {
+  color: var(--primary-text);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* --- NEW: Product Card Actions --- */
+.card-actions {
+  margin-top: auto; /* Pushes buttons to the bottom of the card */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.view-details-btn,
+.add-to-cart-btn-grid {
+  padding: 12px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+.view-details-btn {
+  border: 1px solid var(--border-color);
+  color: var(--secondary-text);
+}
+.view-details-btn:hover {
+  background-color: var(--primary-text);
+  color: var(--surface-color);
+  border-color: var(--primary-text);
+}
+.add-to-cart-btn-grid {
+  background-color: var(--accent-mint);
+  color: #000000;
+  border: 1px solid var(--accent-mint);
+  cursor: pointer;
+}
+.add-to-cart-btn-grid:hover {
+  background-color: var(--accent-mint-dark);
+  border-color: var(--accent-mint-dark);
+  transform: translateY(-2px);
+}
+
+/* ... (all other styles for cart, checkout, etc. are complete and correct) ... */

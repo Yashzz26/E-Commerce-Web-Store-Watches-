@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
       image: "https://m.media-amazon.com/images/I/61fDRIfPQEL.jpg",
       category: "Smart Watch",
       description:
-        "A stylish and powerful smartwatch with advanced health tracking.",
+        "Samsung Galaxy Watch6 LTE (44mm, Graphite, Compatible with Android only) | Introducing BP & ECG Features.<br>A stylish and powerful smartwatch with advanced health tracking.</br>",
       reviews: "1,200 reviews",
       buyers: "5k+ buyers",
     },
@@ -100,13 +100,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const showToast = (message) => {
+  const showToast = (message, type = "default") => {
     const container = document.getElementById("toast-container");
     if (!container) return;
     const toast = document.createElement("div");
-    toast.className = "toast";
+    toast.className = `toast ${type}`;
     toast.textContent = message;
-    container.appendChild(toast);
+    container.prepend(toast);
     setTimeout(() => toast.classList.add("show"), 10);
     setTimeout(() => {
       toast.classList.remove("show");
@@ -127,6 +127,42 @@ document.addEventListener("DOMContentLoaded", () => {
       container.innerHTML = `<a href="profile.html">Hello, Guest</a>`;
     }
   };
+
+  // in script.js
+
+  // Deal of the Day countdown timer logic
+  const dealSection = document.getElementById("deal-of-the-day-section");
+  if (dealSection) {
+    // THIS IS THE LINE YOU WILL EDIT
+   let dealEndTime = new Date(2025, 11, 31, 22, 0, 0); // December 31, 2025, 10:00 PM
+
+    const countdownInterval = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = dealEndTime - now;
+
+      if (distance < 0) {
+        clearInterval(countdownInterval);
+        dealSection.style.display = "none"; // Hide section when timer ends
+        return;
+      }
+
+      const hours = Math.floor(
+        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("hours").innerText = hours
+        .toString()
+        .padStart(2, "0");
+      document.getElementById("minutes").innerText = minutes
+        .toString()
+        .padStart(2, "0");
+      document.getElementById("seconds").innerText = seconds
+        .toString()
+        .padStart(2, "0");
+    }, 1000);
+  }
 
   // --- INITIALIZATION ---
   checkAuth();
@@ -154,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
               product.name
             }"><div class="search-result-item-info"><h4>${
               product.name
-            }</h4><p>$${product.price.toFixed(2)}</p></div></a>`;
+            }</h4><p>₹${product.price.toFixed(2)}</p></div></a>`;
           });
           searchResultsContainer.style.display = "block";
         } else {
@@ -189,7 +225,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const password = document.getElementById("password").value;
         if (username === "admin" && password === "admin1234") {
           sessionStorage.setItem("loggedIn", "true");
-          window.location.href = "index.html";
+          showToast("Login Successful!", "success");
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1500);
         } else {
           document.getElementById("login-error").textContent =
             "Invalid credentials.";
@@ -198,30 +237,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 2. INDEX PAGE (Homepage with Filters & Deal)
+  // 2. INDEX PAGE (REVISED WITH NEW BUTTONS)
   if (currentPath === "index.html" || currentPath === "") {
-    // Product filtering and sorting logic
     const productGrid = document.getElementById("product-grid");
     const filterBtns = document.querySelectorAll(".filter-btn");
     const sortSelect = document.getElementById("sort-select");
 
     if (productGrid && filterBtns.length > 0 && sortSelect) {
+      // REVISED: displayProducts function now includes both buttons
       const displayProducts = (products) => {
         productGrid.innerHTML = "";
         products.forEach((p) => {
-          productGrid.innerHTML += `<div class="product-card"><img src="${
-            p.image
-          }" alt="${p.name}"><div class="product-card-content"><h3>${
-            p.name
-          }</h3><p class="price">$${p.price.toFixed(
-            2
-          )}</p><a href="product.html?id=${
-            p.id
-          }" class="view-details-btn">View Details</a></div></div>`;
+          productGrid.innerHTML += `
+                        <div class="product-card">
+                            <img src="${p.image}" alt="${p.name}">
+                            <div class="product-card-content">
+                                <h3>${p.name}</h3>
+                                <p class="price">₹${p.price.toFixed(2)}</p>
+                                <div class="card-actions">
+                                    <button class="add-to-cart-btn-grid" data-id="${
+                                      p.id
+                                    }">Add to Cart</button>
+                                    <a href="product.html?id=${
+                                      p.id
+                                    }" class="view-details-btn">View Details</a>
+                                </div>
+                            </div>
+                        </div>`;
         });
       };
 
       const applyFiltersAndSort = () => {
+        // ... (This function's logic is correct and remains the same)
         const category =
           document.querySelector(".filter-btn.active").dataset.category;
         const sort = sortSelect.value;
@@ -243,40 +290,27 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       sortSelect.addEventListener("change", applyFiltersAndSort);
+
+      // NEW: Add event listener for the new "Add to Cart" buttons on the grid
+      productGrid.addEventListener("click", (e) => {
+        if (e.target.classList.contains("add-to-cart-btn-grid")) {
+          const productId = parseInt(e.target.dataset.id);
+          const existingItem = cart.find((item) => item.id === productId);
+
+          if (existingItem) {
+            existingItem.quantity++;
+          } else {
+            cart.push({ id: productId, quantity: 1 });
+          }
+          saveCart();
+          updateCartCount();
+          showToast("Item added to cart!");
+        }
+      });
+
       applyFiltersAndSort(); // Initial render of products
     }
-
-    // Deal of the Day countdown timer logic
-    const dealSection = document.getElementById("deal-of-the-day-section");
-    if (dealSection) {
-      let dealEndTime = new Date();
-      dealEndTime.setHours(23, 59, 59, 999);
-      const countdownInterval = setInterval(() => {
-        const now = new Date().getTime();
-        const distance = dealEndTime - now;
-        if (distance < 0) {
-          clearInterval(countdownInterval);
-          dealSection.style.display = "none";
-          return;
-        }
-        const hours = Math.floor(
-          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        document.getElementById("hours").innerText = hours
-          .toString()
-          .padStart(2, "0");
-        document.getElementById("minutes").innerText = minutes
-          .toString()
-          .padStart(2, "0");
-        document.getElementById("seconds").innerText = seconds
-          .toString()
-          .padStart(2, "0");
-      }, 1000);
-    }
   }
-
   // 3. PRODUCT DETAIL PAGE
   if (currentPath === "product.html") {
     const params = new URLSearchParams(window.location.search),
@@ -288,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
         product.image
       }" alt="${product.name}"></div><div class="product-info"><h1>${
         product.name
-      }</h1><p class="price">$${(product.dealPrice || product.price).toFixed(
+      }</h1><p class="price">₹${(product.dealPrice || product.price).toFixed(
         2
       )}</p><p>${
         product.description
@@ -338,15 +372,15 @@ document.addEventListener("DOMContentLoaded", () => {
             p.name
           }"></div><div class="cart-item-details"><h3>${
             p.name
-          }</h3><p class="price">$${(p.dealPrice || p.price).toFixed(
+          }</h3><p class="price">₹${(p.dealPrice || p.price).toFixed(
             2
           )}</p><div class="quantity-controls"><button class="quantity-btn decrease-qty">-</button><span>${
             item.quantity
           }</span><button class="quantity-btn increase-qty">+</button></div></div><button class="remove-item-btn"><i class="fas fa-trash"></i></button></div>`;
         });
-        cartSummary.innerHTML = `<h2>Order Summary</h2><div class="summary-line"><span>Subtotal</span><span>$${subtotal.toFixed(
+        cartSummary.innerHTML = `<h2>Order Summary</h2><div class="summary-line"><span>Subtotal</span><span>₹${subtotal.toFixed(
           2
-        )}</span></div><div class="summary-line total"><span>Total</span><span>$${subtotal.toFixed(
+        )}</span></div><div class="summary-line total"><span>Total</span><span>₹${subtotal.toFixed(
           2
         )}</span></div><a href="checkout.html" class="btn checkout-btn">Proceed to Checkout</a>`;
       };
@@ -368,55 +402,46 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 5. CHECKOUT PAGE (Corrected and Verified)
- if (currentPath === "checkout.html") {
-   const checkoutForm = document.getElementById("checkout-form");
-   const paymentOptions = document.querySelectorAll('input[name="payment"]');
-   const upiOverlay = document.getElementById("upi-payment-overlay");
-   const confirmOrderBtn = document.getElementById("confirm-order-btn");
+  // 5. CHECKOUT PAGE
+  if (currentPath === "checkout.html") {
+    const checkoutForm = document.getElementById("checkout-form");
+    const paymentOptions = document.querySelectorAll('input[name="payment"]');
+    const upiOverlay = document.getElementById("upi-payment-overlay");
+    const confirmOrderBtn = document.getElementById("confirm-order-btn");
 
-   if (
-     checkoutForm &&
-     paymentOptions.length > 0 &&
-     upiOverlay &&
-     confirmOrderBtn
-   ) {
-     const placeOrder = () => {
-       // This function is now the single point of order completion
-       if (upiOverlay.classList.contains("show")) {
-         upiOverlay.classList.remove("show");
-       }
-       setTimeout(() => {
-         cart = [];
-         saveCart();
-         updateCartCount();
-         window.location.href = "confirmation.html";
-       }, 400);
-     };
+    if (
+      checkoutForm &&
+      paymentOptions.length > 0 &&
+      upiOverlay &&
+      confirmOrderBtn
+    ) {
+      const placeOrder = () => {
+        if (upiOverlay.classList.contains("show")) {
+          upiOverlay.classList.remove("show");
+        }
+        showToast("Order Placed Successfully!", "success");
+        setTimeout(() => {
+          cart = [];
+          saveCart();
+          updateCartCount();
+          window.location.href = "confirmation.html";
+        }, 2000);
+      };
+      checkoutForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const selectedPayment = document.querySelector(
+          'input[name="payment"]:checked'
+        ).value;
+        if (selectedPayment === "online") {
+          upiOverlay.classList.add("show");
+        } else {
+          placeOrder();
+        }
+      });
+      confirmOrderBtn.addEventListener("click", placeOrder);
+    }
+  }
 
-     // This handles the main button on the form
-     checkoutForm.addEventListener("submit", (e) => {
-       e.preventDefault();
-       const selectedPayment = document.querySelector(
-         'input[name="payment"]:checked'
-       ).value;
-
-       if (selectedPayment === "online") {
-         // If online is selected, show the overlay instead of submitting
-         upiOverlay.classList.add("show");
-       } else {
-         // If COD is selected, just place the order directly
-         placeOrder();
-       }
-     });
-
-     // This handles the final confirmation button inside the overlay
-     confirmOrderBtn.addEventListener("click", () => {
-       placeOrder();
-     });
-   }
- }
-    
   // 6. PROFILE PAGE
   if (currentPath === "profile.html") {
     const form = document.getElementById("profile-form"),
@@ -425,11 +450,13 @@ document.addEventListener("DOMContentLoaded", () => {
       addressInput = document.getElementById("address"),
       photoInput = document.getElementById("profile-photo-input"),
       photoPreview = document.getElementById("profile-photo-preview");
+
     if (form) {
       nameInput.value = userProfile.name || "";
       emailInput.value = userProfile.email || "";
       addressInput.value = userProfile.address || "";
       if (userProfile.photo) photoPreview.src = userProfile.photo;
+
       photoInput.addEventListener("change", () => {
         const file = photoInput.files[0];
         if (file) {
@@ -440,6 +467,7 @@ document.addEventListener("DOMContentLoaded", () => {
           reader.readAsDataURL(file);
         }
       });
+
       form.addEventListener("submit", (e) => {
         e.preventDefault();
         userProfile.name = nameInput.value;
@@ -447,8 +475,16 @@ document.addEventListener("DOMContentLoaded", () => {
         userProfile.address = addressInput.value;
         userProfile.photo = photoPreview.src;
         saveProfile();
-        showToast("Profile updated successfully!");
+        showToast("Profile updated successfully!", "success");
         updateUserGreeting();
+
+        // ===== NEW LINES ADDED HERE =====
+        // This will redirect to the homepage after a 1.5 second delay,
+        // giving the user time to see the "success" message.
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1500);
+        // =================================
       });
     }
   }
