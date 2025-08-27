@@ -26,7 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       id: 3,
       name: "G-Shock GA2100",
-      price: 99.0,
+      price: 1899.0,
+      dealPrice: 598.0,
+      onDeal: true,
       image: "https://via.placeholder.com/400x400.png?text=G-Shock",
       category: "Analog",
       description: "Legendary toughness in a slim, modern octagonal case.",
@@ -65,18 +67,31 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   ];
 
+  // --- STATE MANAGEMENT ---
   const currentPath = window.location.pathname.split("/").pop() || "index.html";
   let cart = JSON.parse(localStorage.getItem("chronixCart")) || [];
+  let userProfile =
+    JSON.parse(localStorage.getItem("chronixUserProfile")) || {};
 
-  // --- GENERAL FUNCTIONS ---
+  // --- GENERAL HELPER FUNCTIONS ---
   const saveCart = () =>
     localStorage.setItem("chronixCart", JSON.stringify(cart));
+  const saveProfile = () =>
+    localStorage.setItem("chronixUserProfile", JSON.stringify(userProfile));
+
+  const checkAuth = () => {
+    if (!sessionStorage.getItem("loggedIn") && currentPath !== "login.html") {
+      window.location.href = "login.html";
+    }
+  };
 
   const updateCartCount = () => {
     const cartCountElement = document.getElementById("cart-item-count");
     if (cartCountElement) {
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      cartCountElement.textContent = totalItems;
+      cartCountElement.textContent = cart.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+      );
     }
   };
 
@@ -94,46 +109,49 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   };
 
-  const checkAuth = () => {
-    if (!sessionStorage.getItem("loggedIn") && currentPath !== "login.html") {
-      window.location.href = "login.html";
+  const updateUserGreeting = () => {
+    const container = document.getElementById("user-greeting-container");
+    if (!container) return;
+    if (userProfile.name) {
+      container.innerHTML = `
+                <a href="profile.html" class="user-greeting-link">
+                    <img src="${
+                      userProfile.photo || "https://via.placeholder.com/150"
+                    }" alt="Profile" class="profile-pic-small">
+                    <span>Hello, ${userProfile.name.split(" ")[0]}</span>
+                </a>`;
+    } else {
+      container.innerHTML = `<a href="profile.html">Hello, Guest</a>`;
     }
   };
 
   // --- INITIALIZATION ---
   checkAuth();
   updateCartCount();
-
-  // --- SMOOTH PAGE TRANSITIONS ---
+  updateUserGreeting();
   const mainContent = document.getElementById("main-content");
-  if (mainContent) {
-    mainContent.classList.add("fade-in");
-  }
+  if (mainContent) mainContent.classList.add("fade-in");
 
-  // --- LIVE SEARCH BAR LOGIC ---
+  // --- GLOBAL COMPONENTS LOGIC (Navbar, Search, Logout) ---
   const searchBar = document.getElementById("search-bar");
   if (searchBar) {
     const searchResultsContainer = document.getElementById("search-results");
     searchBar.addEventListener("input", () => {
       const searchTerm = searchBar.value.toLowerCase();
+      searchResultsContainer.innerHTML = "";
       if (searchTerm.length > 1) {
         const results = allProducts.filter((p) =>
           p.name.toLowerCase().includes(searchTerm)
         );
-        searchResultsContainer.innerHTML = "";
         if (results.length > 0) {
           results.forEach((product) => {
-            searchResultsContainer.innerHTML += `
-                            <a href="product.html?id=${
-                              product.id
-                            }" class="search-result-item">
-                                <img src="${product.image}" alt="${
+            searchResultsContainer.innerHTML += `<a href="product.html?id=${
+              product.id
+            }" class="search-result-item"><img src="${product.image}" alt="${
               product.name
-            }">
-                                <div class="search-result-item-info"><h4>${
-                                  product.name
-                                }</h4><p>$${product.price.toFixed(2)}</p></div>
-                            </a>`;
+            }"><div class="search-result-item-info"><h4>${
+              product.name
+            }</h4><p>$${product.price.toFixed(2)}</p></div></a>`;
           });
           searchResultsContainer.style.display = "block";
         } else {
@@ -144,13 +162,21 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
     document.addEventListener("click", (e) => {
-      if (!searchBar.contains(e.target)) {
+      if (searchResultsContainer && !searchBar.contains(e.target))
         searchResultsContainer.style.display = "none";
-      }
+    });
+  }
+  const logoutBtn = document.getElementById("logout-btn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      sessionStorage.removeItem("loggedIn");
+      window.location.href = "login.html";
     });
   }
 
-  // --- 1. LOGIN PAGE LOGIC ---
+  // --- PAGE-SPECIFIC LOGIC ---
+
+  // 1. LOGIN PAGE
   if (currentPath === "login.html") {
     const loginForm = document.getElementById("login-form");
     if (loginForm) {
@@ -160,7 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const password = document.getElementById("password").value;
         if (username === "admin" && password === "admin1234") {
           sessionStorage.setItem("loggedIn", "true");
-          alert("Successfully logged in!");
           window.location.href = "index.html";
         } else {
           document.getElementById("login-error").textContent =
@@ -170,89 +195,110 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- 2. INDEX (MAIN) PAGE LOGIC ---
-  if (currentPath === "index.html") {
+  // 2. INDEX PAGE (Homepage with Filters & Deal)
+  if (currentPath === "index.html" || currentPath === "") {
+    // Product filtering and sorting logic
     const productGrid = document.getElementById("product-grid");
     const filterBtns = document.querySelectorAll(".filter-btn");
     const sortSelect = document.getElementById("sort-select");
 
-    const displayProducts = (products) => {
-      productGrid.innerHTML = "";
-      products.forEach((product) => {
-        productGrid.innerHTML += `
-                    <div class="product-card">
-                        <img src="${product.image}" alt="${product.name}">
-                        <div class="product-card-content">
-                            <h3>${product.name}</h3>
-                            <p class="price">$${product.price.toFixed(2)}</p>
-                            <a href="product.html?id=${
-                              product.id
-                            }" class="view-details-btn">View Details</a>
-                        </div>
-                    </div>`;
-      });
-    };
+    if (productGrid && filterBtns.length > 0 && sortSelect) {
+      const displayProducts = (products) => {
+        productGrid.innerHTML = "";
+        products.forEach((p) => {
+          productGrid.innerHTML += `<div class="product-card"><img src="${
+            p.image
+          }" alt="${p.name}"><div class="product-card-content"><h3>${
+            p.name
+          }</h3><p class="price">$${p.price.toFixed(
+            2
+          )}</p><a href="product.html?id=${
+            p.id
+          }" class="view-details-btn">View Details</a></div></div>`;
+        });
+      };
 
-    const applyFiltersAndSort = () => {
-      const activeCategory =
-        document.querySelector(".filter-btn.active").dataset.category;
-      const sortValue = sortSelect.value;
-      let filteredProducts = [...allProducts];
-      if (activeCategory !== "all") {
-        filteredProducts = filteredProducts.filter(
-          (p) => p.category === activeCategory
+      const applyFiltersAndSort = () => {
+        const category =
+          document.querySelector(".filter-btn.active").dataset.category;
+        const sort = sortSelect.value;
+        let products = [...allProducts];
+        if (category !== "all")
+          products = products.filter((p) => p.category === category);
+        if (sort === "price-asc") products.sort((a, b) => a.price - b.price);
+        else if (sort === "price-desc")
+          products.sort((a, b) => b.price - a.price);
+        displayProducts(products);
+      };
+
+      filterBtns.forEach((btn) =>
+        btn.addEventListener("click", () => {
+          filterBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          applyFiltersAndSort();
+        })
+      );
+
+      sortSelect.addEventListener("change", applyFiltersAndSort);
+      applyFiltersAndSort(); // Initial render of products
+    }
+
+    // Deal of the Day countdown timer logic
+    const dealSection = document.getElementById("deal-of-the-day-section");
+    if (dealSection) {
+      let dealEndTime = new Date();
+      dealEndTime.setHours(23, 59, 59, 999);
+      const countdownInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = dealEndTime - now;
+        if (distance < 0) {
+          clearInterval(countdownInterval);
+          dealSection.style.display = "none";
+          return;
+        }
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
         );
-      }
-      if (sortValue === "price-asc")
-        filteredProducts.sort((a, b) => a.price - b.price);
-      else if (sortValue === "price-desc")
-        filteredProducts.sort((a, b) => b.price - a.price);
-      displayProducts(filteredProducts);
-    };
-
-    filterBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        filterBtns.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        applyFiltersAndSort();
-      });
-    });
-    sortSelect.addEventListener("change", applyFiltersAndSort);
-    applyFiltersAndSort();
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById("hours").innerText = hours
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("minutes").innerText = minutes
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("seconds").innerText = seconds
+          .toString()
+          .padStart(2, "0");
+      }, 1000);
+    }
   }
 
-  // --- 3. PRODUCT DETAIL PAGE LOGIC ---
+  // 3. PRODUCT DETAIL PAGE
   if (currentPath === "product.html") {
-    const params = new URLSearchParams(window.location.search);
-    const productId = parseInt(params.get("id"));
-    const product = allProducts.find((p) => p.id === productId);
-    const container = document.getElementById("product-detail-container");
-
+    const params = new URLSearchParams(window.location.search),
+      productId = parseInt(params.get("id")),
+      product = allProducts.find((p) => p.id === productId),
+      container = document.getElementById("product-detail-container");
     if (product && container) {
-      container.innerHTML = `
-                <div class="product-image-gallery"><img src="${
-                  product.image
-                }" alt="${product.name}"></div>
-                <div class="product-info">
-                    <h1>${product.name}</h1>
-                    <p class="price">$${product.price.toFixed(2)}</p>
-                    <p>${product.description}</p>
-                    <div class="product-actions">
-                        <button class="add-to-cart-btn" data-id="${
-                          product.id
-                        }">Add to Cart</button>
-                        <a href="checkout.html?buyNow=${
-                          product.id
-                        }" class="buy-now-btn">Buy Now</a>
-                    </div>
-                </div>`;
+      container.innerHTML = `<div class="product-image-gallery"><img src="${
+        product.image
+      }" alt="${product.name}"></div><div class="product-info"><h1>${
+        product.name
+      }</h1><p class="price">$${(product.dealPrice || product.price).toFixed(
+        2
+      )}</p><p>${
+        product.description
+      }</p><div class="product-actions"><button class="add-to-cart-btn" data-id="${
+        product.id
+      }">Add to Cart</button><a href="checkout.html" class="buy-now-btn">Buy Now</a></div></div>`;
       container
         .querySelector(".add-to-cart-btn")
         .addEventListener("click", (e) => {
-          const id = parseInt(e.target.dataset.id);
-          const existingItem = cart.find((item) => item.id === id);
+          const id = parseInt(e.target.dataset.id),
+            existingItem = cart.find((item) => item.id === id);
           if (existingItem) existingItem.quantity++;
-          else cart.push({ id: id, quantity: 1 });
+          else cart.push({ id, quantity: 1 });
           saveCart();
           updateCartCount();
           showToast("Item added to cart!");
@@ -262,132 +308,131 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- 4. CART PAGE LOGIC ---
+  // 4. CART PAGE
   if (currentPath === "cart.html") {
-    const cartItemsList = document.getElementById("cart-items-list");
-    const cartSummary = document.getElementById("cart-summary");
-    const emptyCartMessage = document.getElementById("empty-cart-message");
-
-    const renderCart = () => {
-      cartItemsList.innerHTML = "";
-      if (cart.length === 0) {
-        emptyCartMessage.classList.add("show");
-        cartSummary.style.display = "none";
-        document.querySelector(".cart-main h1").style.display = "none";
-        return;
-      }
-      emptyCartMessage.classList.remove("show");
-      cartSummary.style.display = "block";
-      document.querySelector(".cart-main h1").style.display = "block";
-
-      let subtotal = 0;
-      cart.forEach((item) => {
-        const product = allProducts.find((p) => p.id === item.id);
-        subtotal += product.price * item.quantity;
-        cartItemsList.innerHTML += `
-                    <div class="cart-item" data-id="${item.id}">
-                        <div class="cart-item-image"><img src="${
-                          product.image
-                        }" alt="${product.name}"></div>
-                        <div class="cart-item-details">
-                            <h3>${
-                              product.name
-                            }</h3><p class="price">$${product.price.toFixed(
+    const cartItemsList = document.getElementById("cart-items-list"),
+      cartSummary = document.getElementById("cart-summary"),
+      emptyMsg = document.getElementById("empty-cart-message");
+    if (cartItemsList) {
+      const renderCart = () => {
+        cartItemsList.innerHTML = "";
+        if (cart.length === 0) {
+          emptyMsg.classList.add("show");
+          cartSummary.style.display = "none";
+          document.querySelector(".cart-main h1").style.display = "none";
+          return;
+        }
+        emptyMsg.classList.remove("show");
+        cartSummary.style.display = "block";
+        document.querySelector(".cart-main h1").style.display = "block";
+        let subtotal = 0;
+        cart.forEach((item) => {
+          const p = allProducts.find((prod) => prod.id === item.id);
+          subtotal += (p.dealPrice || p.price) * item.quantity;
+          cartItemsList.innerHTML += `<div class="cart-item" data-id="${
+            item.id
+          }"><div class="cart-item-image"><img src="${p.image}" alt="${
+            p.name
+          }"></div><div class="cart-item-details"><h3>${
+            p.name
+          }</h3><p class="price">$${(p.dealPrice || p.price).toFixed(
+            2
+          )}</p><div class="quantity-controls"><button class="quantity-btn decrease-qty">-</button><span>${
+            item.quantity
+          }</span><button class="quantity-btn increase-qty">+</button></div></div><button class="remove-item-btn"><i class="fas fa-trash"></i></button></div>`;
+        });
+        cartSummary.innerHTML = `<h2>Order Summary</h2><div class="summary-line"><span>Subtotal</span><span>$${subtotal.toFixed(
           2
-        )}</p>
-                            <div class="quantity-controls">
-                                <button class="quantity-btn decrease-qty">-</button>
-                                <span>${item.quantity}</span>
-                                <button class="quantity-btn increase-qty">+</button>
-                            </div>
-                        </div>
-                        <button class="remove-item-btn"><i class="fas fa-trash"></i></button>
-                    </div>`;
+        )}</span></div><div class="summary-line total"><span>Total</span><span>$${subtotal.toFixed(
+          2
+        )}</span></div><a href="checkout.html" class="btn checkout-btn">Proceed to Checkout</a>`;
+      };
+      cartItemsList.addEventListener("click", (e) => {
+        const target = e.target.closest("button");
+        if (!target) return;
+        const id = parseInt(e.target.closest(".cart-item").dataset.id),
+          item = cart.find((i) => i.id === id);
+        if (target.classList.contains("increase-qty")) item.quantity++;
+        else if (target.classList.contains("decrease-qty") && item.quantity > 1)
+          item.quantity--;
+        else if (target.classList.contains("remove-item-btn"))
+          cart = cart.filter((i) => i.id !== id);
+        saveCart();
+        updateCartCount();
+        renderCart();
       });
-
-      const total = subtotal;
-      cartSummary.innerHTML = `
-                <h2>Order Summary</h2>
-                <div class="summary-line"><span>Subtotal</span><span>$${subtotal.toFixed(
-                  2
-                )}</span></div>
-                <div class="summary-line total"><span>Total</span><span>$${total.toFixed(
-                  2
-                )}</span></div>
-                <a href="checkout.html" class="btn checkout-btn">Proceed to Checkout</a>`;
-    };
-
-    cartItemsList.addEventListener("click", (e) => {
-      const target = e.target.closest("button");
-      if (!target) return;
-      const cartItemDiv = e.target.closest(".cart-item");
-      const id = parseInt(cartItemDiv.dataset.id);
-      const cartItem = cart.find((item) => item.id === id);
-
-      if (target.classList.contains("increase-qty")) cartItem.quantity++;
-      else if (target.classList.contains("decrease-qty")) {
-        if (cartItem.quantity > 1) cartItem.quantity--;
-      } else if (target.classList.contains("remove-item-btn")) {
-        cart = cart.filter((item) => item.id !== id);
-      }
-      saveCart();
-      updateCartCount();
       renderCart();
-    });
-    renderCart();
+    }
   }
 
-  // --- 5. CHECKOUT PAGE LOGIC ---
+  // 5. CHECKOUT PAGE
   if (currentPath === "checkout.html") {
     const checkoutForm = document.getElementById("checkout-form");
     const paymentOptions = document.querySelectorAll('input[name="payment"]');
     const qrCodeOverlay = document.getElementById("qr-code-overlay");
     const qrPlaceOrderBtn = document.getElementById("qr-place-order-btn");
-
-    const placeOrder = () => {
-      const paymentMethod = document.querySelector(
-        'input[name="payment"]:checked'
-      ).value;
-      if (qrCodeOverlay.classList.contains("show")) {
-        qrCodeOverlay.classList.remove("show");
-      }
-      setTimeout(() => {
-        alert(
-          `Order placed successfully!\nPayment Method: ${paymentMethod.toUpperCase()}`
-        );
-        cart = []; // Clear cart on successful order
-        saveCart();
-        window.location.href = "index.html";
-      }, 300);
-    };
-
-    paymentOptions.forEach((option) => {
-      option.addEventListener("change", () => {
-        if (option.value === "upi") qrCodeOverlay.classList.add("show");
-        else qrCodeOverlay.classList.remove("show");
+    if (checkoutForm) {
+      const placeOrder = () => {
+        if (qrCodeOverlay.classList.contains("show"))
+          qrCodeOverlay.classList.remove("show");
+        setTimeout(() => {
+          cart = [];
+          saveCart();
+          window.location.href = "confirmation.html";
+        }, 300);
+      };
+      paymentOptions.forEach((option) => {
+        option.addEventListener("change", () => {
+          if (option.value === "upi" && option.checked)
+            qrCodeOverlay.classList.add("show");
+          else qrCodeOverlay.classList.remove("show");
+        });
       });
-    });
-
-    checkoutForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (
-        document.querySelector('input[name="payment"]:checked').value === "upi"
-      ) {
-        qrCodeOverlay.classList.add("show");
-      } else {
-        placeOrder();
-      }
-    });
-
-    qrPlaceOrderBtn.addEventListener("click", placeOrder);
+      checkoutForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const selectedPayment = document.querySelector(
+          'input[name="payment"]:checked'
+        ).value;
+        if (selectedPayment === "upi") qrCodeOverlay.classList.add("show");
+        else placeOrder();
+      });
+      qrPlaceOrderBtn.addEventListener("click", placeOrder);
+    }
   }
 
-  // --- LOGOUT BUTTON (runs on pages where it exists) ---
-  const logoutBtn = document.getElementById("logout-btn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      sessionStorage.removeItem("loggedIn");
-      window.location.href = "login.html";
-    });
+  // 6. PROFILE PAGE
+  if (currentPath === "profile.html") {
+    const form = document.getElementById("profile-form"),
+      nameInput = document.getElementById("full-name"),
+      emailInput = document.getElementById("email-id"),
+      addressInput = document.getElementById("address"),
+      photoInput = document.getElementById("profile-photo-input"),
+      photoPreview = document.getElementById("profile-photo-preview");
+    if (form) {
+      nameInput.value = userProfile.name || "";
+      emailInput.value = userProfile.email || "";
+      addressInput.value = userProfile.address || "";
+      if (userProfile.photo) photoPreview.src = userProfile.photo;
+      photoInput.addEventListener("change", () => {
+        const file = photoInput.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            photoPreview.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        userProfile.name = nameInput.value;
+        userProfile.email = emailInput.value;
+        userProfile.address = addressInput.value;
+        userProfile.photo = photoPreview.src;
+        saveProfile();
+        showToast("Profile updated successfully!");
+        updateUserGreeting();
+      });
+    }
   }
 });
