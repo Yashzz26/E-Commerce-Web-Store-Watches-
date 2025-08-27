@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - Chronix</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,28 +14,53 @@
         <header>
              <nav class="navbar">
                 <a href="index.html" class="logo">Chronix<span>.</span></a>
+                <div id="user-greeting-container" class="user-greeting"></div>
              </nav>
         </header>
         <main class="checkout-main">
             <h2>Checkout</h2>
-            <form id="checkout-form" class="checkout-form">
-                <h3>Payment Method</h3>
-                <div class="payment-options">
-                    <label><input type="radio" name="payment" value="cod" checked> Cash on Delivery</label>
-                    <label><input type="radio" name="payment" value="upi"> Pay Online (UPI)</label>
-                </div>
-                <button type="submit" class="btn">Place Order</button>
-            </form>
+            <div class="checkout-form-container">
+                <form id="checkout-form" class="checkout-form">
+                    <h3>Payment Method</h3>
+                    <div class="payment-options">
+                        <label>
+                            <input type="radio" name="payment" value="cod" checked> Cash on Delivery
+                        </label>
+                        <label>
+                            <input type="radio" name="payment" value="online"> Pay Online (UPI)
+                        </label>
+                    </div>
+                    <button type="submit" class="btn">Proceed to Pay</button>
+                </form>
+            </div>
         </main>
     </div>
-    <div id="qr-code-overlay" class="overlay-container">
-        <div class="overlay-box">
-            <h3>Scan to Pay with UPI</h3>
-            <img src="/images/qr.jpg" alt="QR Code for UPI Payment">
-            <p>After scanning, confirm your order below.</p>
-            <button id="qr-place-order-btn" class="btn">Place Order</button>
+
+    <div id="upi-payment-overlay" class="overlay-container">
+        <div class="overlay-box payment-overlay">
+            <h3>Pay with UPI</h3>
+            <div class="upi-input-group">
+                <label for="upi-id">Enter your UPI ID</label>
+                <input type="text" id="upi-id" placeholder="yourname@bank">
+            </div>
+            <div class="separator">OR</div>
+            <div class="upi-qr-section">
+                <p>Scan the QR Code</p>
+                <img src="/images/qr.jpg" alt="UPI QR Code">
+            </div>
+            <div class="separator">OR</div>
+            <div class="upi-apps">
+                <p>Pay with your favorite app</p>
+                <div class="app-icons">
+                    <img src="/images/gpay.jpeg" alt="Google Pay">
+                    <img src="/images/phonepay.png" alt="PhonePe">
+                    <img src="/images/bhim.png" alt="BHIM UPI">
+                </div>
+            </div>
+            <button id="confirm-order-btn" class="btn">Confirm & Place Order</button>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

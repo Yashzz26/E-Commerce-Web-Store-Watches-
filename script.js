@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
       id: 1,
       name: "Galaxy Watch 6",
       price: 249.99,
-      image: "https://via.placeholder.com/400x400.png?text=Galaxy+Watch",
+      image: "https://m.media-amazon.com/images/I/61fDRIfPQEL.jpg",
       category: "Smart Watch",
       description:
         "A stylish and powerful smartwatch with advanced health tracking.",
@@ -16,7 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
       id: 2,
       name: "Seiko 5 Sports",
       price: 275.0,
-      image: "https://via.placeholder.com/400x400.png?text=Seiko+5",
+      image:
+        "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRK9it_dSbJzeCZ9LKyt4UvFPKJ5E-3CQdH1AAFf5TTdw-YBNuLTZrgGNRgspRJZ1nnfT-IK_dmiJZ1mN8C00pnx5U5DeFoAuBlJ99aP6RX1DbuW-qwIuJuVg",
       category: "Analog",
       description:
         "A reliable and iconic automatic watch, perfect for everyday wear.",
@@ -29,7 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
       price: 1899.0,
       dealPrice: 598.0,
       onDeal: true,
-      image: "https://via.placeholder.com/400x400.png?text=G-Shock",
+      image:
+        "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcT7HYrA1SlnzcP3hCsw4w6Pvj_huggDXnjX_CLhAYEUW8XYUg9_LbbKNZ0fX7DDPxRv6BlSdB8MYdwBkpTpkaBFZ7g9sBB4O6tg1r7O-M9MXgC68IW7Imwe8A",
       category: "Analog",
       description: "Legendary toughness in a slim, modern octagonal case.",
       reviews: "4,800 reviews",
@@ -39,7 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
       id: 4,
       name: "Tudor Black Bay",
       price: 4150.0,
-      image: "https://via.placeholder.com/400x400.png?text=Tudor+BB",
+      image:
+        "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcT-4fBer0ilZi604UpkWWEeJXeawiBqMUheAwNuvvhei5jjsHMQ5k_XtTVNDvdL7guNol_nMfox_lh6lv7qZHSGECQcRXRlMnhI-zIgd3qfWCHofapblQAcXw",
       category: "Luxury",
       description: "A vintage-inspired diver watch with modern craftsmanship.",
       reviews: "800 reviews",
@@ -49,7 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
       id: 5,
       name: "Apple Watch Ultra",
       price: 799.0,
-      image: "https://via.placeholder.com/400x400.png?text=Apple+Watch",
+      image:
+        "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcTFFFxq5qm01OJINS-8URwgxW07tzJSudnV_45lt6XXHPx4og_KEvtGzOexx99U47uRLv9AKdI05RM81bhp7L6C887gnxDArUCnfwa2JS4",
       category: "Smart Watch",
       description: "The most rugged and capable Apple Watch ever.",
       reviews: "3,100 reviews",
@@ -59,7 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
       id: 6,
       name: "Rolex Submariner",
       price: 9150.0,
-      image: "https://via.placeholder.com/400x400.png?text=Rolex",
+      image:
+        "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcToUUWWmXHwgCQ_vuwyxtHcHbaagfxuv16jdE1G7YBbOfZq8izoaxmwQZRG7lhl8euUTNHidcfs1zY8mwCR2gcasmjz5cyA0FnLglzqUlnjJb57r3JlZN-i8-E",
       category: "Luxury",
       description: "The archetype of the diver's watch, a true icon.",
       reviews: "1,800 reviews",
@@ -113,13 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("user-greeting-container");
     if (!container) return;
     if (userProfile.name) {
-      container.innerHTML = `
-                <a href="profile.html" class="user-greeting-link">
-                    <img src="${
-                      userProfile.photo || "https://via.placeholder.com/150"
-                    }" alt="Profile" class="profile-pic-small">
-                    <span>Hello, ${userProfile.name.split(" ")[0]}</span>
-                </a>`;
+      container.innerHTML = `<a href="profile.html" class="user-greeting-link"><img src="${
+        userProfile.photo || "https://via.placeholder.com/150"
+      }" alt="Profile" class="profile-pic-small"><span>Hello, ${
+        userProfile.name.split(" ")[0]
+      }</span></a>`;
     } else {
       container.innerHTML = `<a href="profile.html">Hello, Guest</a>`;
     }
@@ -365,41 +368,55 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 5. CHECKOUT PAGE
-  if (currentPath === "checkout.html") {
-    const checkoutForm = document.getElementById("checkout-form");
-    const paymentOptions = document.querySelectorAll('input[name="payment"]');
-    const qrCodeOverlay = document.getElementById("qr-code-overlay");
-    const qrPlaceOrderBtn = document.getElementById("qr-place-order-btn");
-    if (checkoutForm) {
-      const placeOrder = () => {
-        if (qrCodeOverlay.classList.contains("show"))
-          qrCodeOverlay.classList.remove("show");
-        setTimeout(() => {
-          cart = [];
-          saveCart();
-          window.location.href = "confirmation.html";
-        }, 300);
-      };
-      paymentOptions.forEach((option) => {
-        option.addEventListener("change", () => {
-          if (option.value === "upi" && option.checked)
-            qrCodeOverlay.classList.add("show");
-          else qrCodeOverlay.classList.remove("show");
-        });
-      });
-      checkoutForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const selectedPayment = document.querySelector(
-          'input[name="payment"]:checked'
-        ).value;
-        if (selectedPayment === "upi") qrCodeOverlay.classList.add("show");
-        else placeOrder();
-      });
-      qrPlaceOrderBtn.addEventListener("click", placeOrder);
-    }
-  }
+  // 5. CHECKOUT PAGE (Corrected and Verified)
+ if (currentPath === "checkout.html") {
+   const checkoutForm = document.getElementById("checkout-form");
+   const paymentOptions = document.querySelectorAll('input[name="payment"]');
+   const upiOverlay = document.getElementById("upi-payment-overlay");
+   const confirmOrderBtn = document.getElementById("confirm-order-btn");
 
+   if (
+     checkoutForm &&
+     paymentOptions.length > 0 &&
+     upiOverlay &&
+     confirmOrderBtn
+   ) {
+     const placeOrder = () => {
+       // This function is now the single point of order completion
+       if (upiOverlay.classList.contains("show")) {
+         upiOverlay.classList.remove("show");
+       }
+       setTimeout(() => {
+         cart = [];
+         saveCart();
+         updateCartCount();
+         window.location.href = "confirmation.html";
+       }, 400);
+     };
+
+     // This handles the main button on the form
+     checkoutForm.addEventListener("submit", (e) => {
+       e.preventDefault();
+       const selectedPayment = document.querySelector(
+         'input[name="payment"]:checked'
+       ).value;
+
+       if (selectedPayment === "online") {
+         // If online is selected, show the overlay instead of submitting
+         upiOverlay.classList.add("show");
+       } else {
+         // If COD is selected, just place the order directly
+         placeOrder();
+       }
+     });
+
+     // This handles the final confirmation button inside the overlay
+     confirmOrderBtn.addEventListener("click", () => {
+       placeOrder();
+     });
+   }
+ }
+    
   // 6. PROFILE PAGE
   if (currentPath === "profile.html") {
     const form = document.getElementById("profile-form"),
