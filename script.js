@@ -1,74 +1,91 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- DATABASE ---
+  // --- DATABASE (with full image galleries for every watch) ---
   const allProducts = [
     {
       id: 1,
       name: "Galaxy Watch 6",
-      price: 249.99,
-      image: "https://m.media-amazon.com/images/I/61fDRIfPQEL.jpg",
+      price: 21999.0,
       category: "Smart Watch",
       description:
-        "A stylish and powerful smartwatch with advanced health tracking.",
-      reviews: "1,200 reviews",
-      buyers: "5k+ buyers",
+        "A stylish and powerful smartwatch with advanced health tracking, a larger screen, and improved performance.",
+      imageGallery: [
+        "https://m.media-amazon.com/images/I/61fDRIfPQEL.jpg",
+        "https://m.media-amazon.com/images/I/71bE1Kss2FL._AC_SL1500_.jpg",
+        "https://m.media-amazon.com/images/I/71pI0eJz7GL._AC_SL1500_.jpg",
+        "https://m.media-amazon.com/images/I/61y-d73tJjL._AC_SL1500_.jpg",
+      ],
     },
     {
       id: 2,
       name: "Seiko 5 Sports",
-      price: 275.0,
-      image:
-        "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRK9it_dSbJzeCZ9LKyt4UvFPKJ5E-3CQdH1AAFf5TTdw-YBNuLTZrgGNRgspRJZ1nnfT-IK_dmiJZ1mN8C00pnx5U5DeFoAuBlJ99aP6RX1DbuW-qwIuJuVg",
+      price: 25500.0,
       category: "Analog",
       description:
-        "A reliable and iconic automatic watch, perfect for everyday wear.",
-      reviews: "2,500 reviews",
-      buyers: "10k+ buyers",
+        "A reliable and iconic automatic watch, perfect for everyday wear and adventure. Features a durable stainless steel case.",
+      imageGallery: [
+        "https://m.media-amazon.com/images/I/71L5l2A4DPL._AC_UY1000_.jpg",
+        "https://www.seikowatches.com/in-en/-/media/Images/Global/Seiko/Home/Seiko-5-Sports/lineup/SKX-Sports-Style/img_SRPD55K1/SRPD55K1_bac.png",
+        "https://5.imimg.com/data5/ANDROID/Default/2021/4/SF/QB/FP/36395995/product-jpeg-500x500.jpg",
+        "https://i.ebayimg.com/images/g/g~QAAOSw-4xka-n1/s-l1200.webp",
+      ],
     },
     {
       id: 3,
       name: "G-Shock GA2100",
-      price: 1899.0,
-      dealPrice: 598.0,
+      price: 8995.0,
+      dealPrice: 7500.0,
       onDeal: true,
-      image:
-        "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcT7HYrA1SlnzcP3hCsw4w6Pvj_huggDXnjX_CLhAYEUW8XYUg9_LbbKNZ0fX7DDPxRv6BlSdB8MYdwBkpTpkaBFZ7g9sBB4O6tg1r7O-M9MXgC68IW7Imwe8A",
       category: "Analog",
-      description: "Legendary toughness in a slim, modern octagonal case.",
-      reviews: "4,800 reviews",
-      buyers: "25k+ buyers",
+      description:
+        "Legendary toughness in a slim, modern octagonal case. Water-resistant up to 200 meters.",
+      imageGallery: [
+        "https://m.media-amazon.com/images/I/61-pC3-A8BL._AC_UY1000_.jpg",
+        "https://www.casio.com/content/dam/casio/product-info/wat/g-shock/ga-2100/ga-2100-1a1/assets/GA-2100-1A1_l-02.png.transform/main-l/image.png",
+        "https://www.casio.com/content/dam/casio/product-info/wat/g-shock/ga-2100/ga-2100-1a1/assets/GA-2100-1A1_l-03.png.transform/main-l/image.png",
+        "https://media.gq.com/photos/5d5452a20423910008544e31/master/w_1600%2Cc_limit/casio-g-shock-watch.jpg",
+      ],
     },
     {
       id: 4,
       name: "Tudor Black Bay",
-      price: 4150.0,
-      image:
-        "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcT-4fBer0ilZi604UpkWWEeJXeawiBqMUheAwNuvvhei5jjsHMQ5k_XtTVNDvdL7guNol_nMfox_lh6lv7qZHSGECQcRXRlMnhI-zIgd3qfWCHofapblQAcXw",
+      price: 350000.0,
       category: "Luxury",
-      description: "A vintage-inspired diver watch with modern craftsmanship.",
-      reviews: "800 reviews",
-      buyers: "2k+ buyers",
+      description:
+        "A vintage-inspired diver watch with modern craftsmanship and a timeless design. Certified chronometer.",
+      imageGallery: [
+        "https://content.thewosgroup.com/productimage/17771235/17771235_1.jpg",
+        "https://www.tudorwatch.com/-/media/watch-assets/family/black-bay/black-bay-41-mm-steel/m79230n-0005/slides/m79230n-0005-02-watch-case.jpg",
+        "https://www.tudorwatch.com/-/media/watch-assets/family/black-bay/black-bay-41-mm-steel/m79230n-0005/slides/m79230n-0005-04-watch-bracelet.jpg",
+        "https://images.ethoswatches.com/img/t/tudor-black-bay-m79230n-0005-41-mm-17771235_5.jpg",
+      ],
     },
     {
       id: 5,
       name: "Apple Watch Ultra",
-      price: 799.0,
-      image:
-        "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcTFFFxq5qm01OJINS-8URwgxW07tzJSudnV_45lt6XXHPx4og_KEvtGzOexx99U47uRLv9AKdI05RM81bhp7L6C887gnxDArUCnfwa2JS4",
+      price: 89900.0,
       category: "Smart Watch",
-      description: "The most rugged and capable Apple Watch ever.",
-      reviews: "3,100 reviews",
-      buyers: "15k+ buyers",
+      description:
+        "The most rugged and capable Apple Watch ever. Designed for exploration, adventure, and endurance.",
+      imageGallery: [
+        "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MQF03_VW_34FR+watch-49-titanium-ultra_VW_34FR_WF_CO+watch-face-49-alpine-ultra_VW_34FR_WF_CO_GEO_IN?wid=752&hei=720&bgc=fafafa&trim=1&.v=1683226926343",
+        "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MQF03_VW_34FR+watch-49-titanium-ultra_VW_34FR_WF_CO?wid=752&hei=720&bgc=fafafa&trim=1&.v=1683226926343",
+        "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iup-hero-marketing-202209?wid=986&hei=636&fmt=png-alpha&.v=1680126780029",
+        "https://m.media-amazon.com/images/I/812cA4I2I3L.jpg",
+      ],
     },
     {
       id: 6,
       name: "Rolex Submariner",
-      price: 9150.0,
-      image:
-        "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcToUUWWmXHwgCQ_vuwyxtHcHbaagfxuv16jdE1G7YBbOfZq8izoaxmwQZRG7lhl8euUTNHidcfs1zY8mwCR2gcasmjz5cyA0FnLglzqUlnjJb57r3JlZN-i8-E",
+      price: 1250000.0,
       category: "Luxury",
-      description: "The archetype of the diver's watch, a true icon.",
-      reviews: "1,800 reviews",
-      buyers: "4k+ buyers",
+      description:
+        "The archetype of the diver's watch, a true icon. Unwavering reliability and timeless design.",
+      imageGallery: [
+        "https://content.rolex.com/v7/dam/new-watches/2023/m126610lv-0002/m126610lv-0002_portrait.jpg?sc_lang=en_in&imwidth=1280",
+        "https://content.rolex.com/v7/dam/new-watches/2023/m126610lv-0002/m126610lv-0002_showcase.jpg?sc_lang=en_in&imwidth=1280",
+        "https://content.rolex.com/v7/dam/new-watches/2023/m126610lv-0002/m126610lv-0002_0006.jpg?sc_lang=en_in&imwidth=1280",
+        "https://content.rolex.com/v7/dam/new-watches/2023/m126610lv-0002/m126610lv-0002_0003.jpg?sc_lang=en_in&imwidth=1280",
+      ],
     },
   ];
 
@@ -151,11 +168,12 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         if (results.length > 0) {
           results.forEach((product) => {
+            // THIS IS THE FIX: Use product.imageGallery[0] instead of product.image
             searchResultsContainer.innerHTML += `<a href="product.html?id=${
               product.id
-            }" class="search-result-item"><img src="${product.image}" alt="${
-              product.name
-            }"><div class="search-result-item-info"><h4>${
+            }" class="search-result-item"><img src="${
+              product.imageGallery[0]
+            }" alt="${product.name}"><div class="search-result-item-info"><h4>${
               product.name
             }</h4><p>₹${product.price.toFixed(2)}</p></div></a>`;
           });
@@ -225,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const totalReviews = productReviews.length;
           productGrid.innerHTML += `
                         <div class="product-card">
-                            <img src="${p.image}" alt="${p.name}">
+                            <img src="${p.imageGallery[0]}" alt="${p.name}">
                             <div class="product-card-content">
                                 <h3>${p.name}</h3>
                                 <div class="average-rating-display">
@@ -301,12 +319,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 3. PRODUCT DETAIL PAGE
   if (currentPath === "product.html") {
-    const params = new URLSearchParams(window.location.search);
-    const productId = parseInt(params.get("id"));
-    const product = allProducts.find((p) => p.id === productId);
-    const container = document.getElementById("product-detail-container");
-
+    const params = new URLSearchParams(window.location.search),
+      productId = parseInt(params.get("id")),
+      product = allProducts.find((p) => p.id === productId),
+      container = document.getElementById("product-detail-container");
     if (product && container) {
+      const createImageGalleryHTML = (gallery) => {
+        const mainImage = gallery[0];
+        let thumbnailsHTML = "";
+        gallery.forEach((imgSrc, index) => {
+          thumbnailsHTML += `<img src="${imgSrc}" alt="Thumbnail ${
+            index + 1
+          }" class="thumbnail-img ${index === 0 ? "active" : ""}">`;
+        });
+        return `
+                    <div class="product-image-gallery">
+                        <div class="main-image-container"><img src="${mainImage}" alt="${product.name}" id="main-product-image"></div>
+                        <div class="thumbnail-container">${thumbnailsHTML}</div>
+                    </div>`;
+      };
+
       const renderProductInfo = () => {
         const productReviews = allReviews.filter(
           (review) => review.productId === productId
@@ -319,9 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const totalReviews = productReviews.length;
 
         container.innerHTML = `
-                    <div class="product-image-gallery"><img src="${
-                      product.image
-                    }" alt="${product.name}"></div>
+                    ${createImageGalleryHTML(product.imageGallery)}
                     <div class="product-info">
                         <h1>${product.name}</h1>
                         <div class="average-rating-display">
@@ -344,22 +374,28 @@ document.addEventListener("DOMContentLoaded", () => {
         container
           .querySelector(".add-to-cart-btn")
           .addEventListener("click", (e) => {
-            const id = parseInt(e.target.dataset.id);
-            const existingItem = cart.find((item) => item.id === id);
-            if (existingItem) {
-              existingItem.quantity++;
-            } else {
-              cart.push({ id: id, quantity: 1 });
-            }
+            const id = parseInt(e.target.dataset.id),
+              existingItem = cart.find((item) => item.id === id);
+            if (existingItem) existingItem.quantity++;
+            else cart.push({ id, quantity: 1 });
             saveCart();
             updateCartCount();
             showToast("Item added to cart!");
           });
+
+        const mainProductImage = document.getElementById("main-product-image");
+        const thumbnails = container.querySelectorAll(".thumbnail-img");
+        thumbnails.forEach((thumb) => {
+          thumb.addEventListener("click", () => {
+            mainProductImage.src = thumb.src;
+            thumbnails.forEach((t) => t.classList.remove("active"));
+            thumb.classList.add("active");
+          });
+        });
       };
 
       const reviewsList = document.getElementById("reviews-list");
       const reviewForm = document.getElementById("review-form");
-
       if (reviewsList && reviewForm) {
         const starRatingInput = reviewForm.querySelector(".star-rating-input");
         const ratingValueInput = reviewForm.querySelector("#rating-value");
@@ -397,15 +433,12 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         starRatingInput.addEventListener("mouseover", (e) => {
-          if (e.target.tagName === "I") {
+          if (e.target.tagName === "I")
             updateStarDisplay(e.target.dataset.value);
-          }
         });
-
         starRatingInput.addEventListener("mouseout", () => {
           updateStarDisplay(ratingValueInput.value);
         });
-
         starRatingInput.addEventListener("click", (e) => {
           if (e.target.tagName === "I") {
             ratingValueInput.value = e.target.dataset.value;
@@ -416,7 +449,7 @@ document.addEventListener("DOMContentLoaded", () => {
         reviewForm.addEventListener("submit", (e) => {
           e.preventDefault();
           const newReview = {
-            productId: productId,
+            productId,
             name: document.getElementById("reviewer-name").value,
             rating: parseInt(ratingValueInput.value),
             text: document.getElementById("review-text").value,
@@ -431,8 +464,8 @@ document.addEventListener("DOMContentLoaded", () => {
           reviewForm.reset();
           ratingValueInput.value = 0;
           updateStarDisplay(0);
-          renderProductInfo(); // Re-render the top section to update average
-          renderReviews(); // Re-render the reviews list
+          renderProductInfo();
+          renderReviews();
         });
 
         renderProductInfo();
@@ -454,21 +487,23 @@ document.addEventListener("DOMContentLoaded", () => {
         if (cart.length === 0) {
           emptyMsg.classList.add("show");
           cartSummary.style.display = "none";
-          document.querySelector(".cart-main h1").style.display = "none";
+          if (document.querySelector(".cart-main h1"))
+            document.querySelector(".cart-main h1").style.display = "none";
           return;
         }
         emptyMsg.classList.remove("show");
         cartSummary.style.display = "block";
-        document.querySelector(".cart-main h1").style.display = "block";
+        if (document.querySelector(".cart-main h1"))
+          document.querySelector(".cart-main h1").style.display = "block";
         let subtotal = 0;
         cart.forEach((item) => {
           const p = allProducts.find((prod) => prod.id === item.id);
           subtotal += (p.dealPrice || p.price) * item.quantity;
           cartItemsList.innerHTML += `<div class="cart-item" data-id="${
             item.id
-          }"><div class="cart-item-image"><img src="${p.image}" alt="${
-            p.name
-          }"></div><div class="cart-item-details"><h3>${
+          }"><div class="cart-item-image"><img src="${
+            p.imageGallery[0]
+          }" alt="${p.name}"></div><div class="cart-item-details"><h3>${
             p.name
           }</h3><p class="price">₹${(p.dealPrice || p.price).toFixed(
             2
