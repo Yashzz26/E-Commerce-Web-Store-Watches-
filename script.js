@@ -10,9 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
         "A stylish and powerful smartwatch with advanced health tracking, a larger screen, and improved performance.",
       imageGallery: [
         "https://m.media-amazon.com/images/I/61fDRIfPQEL.jpg",
-        "https://m.media-amazon.com/images/I/71bE1Kss2FL._AC_SL1500_.jpg",
-        "https://m.media-amazon.com/images/I/71pI0eJz7GL._AC_SL1500_.jpg",
-        "https://m.media-amazon.com/images/I/61y-d73tJjL._AC_SL1500_.jpg",
+        "https://m.media-amazon.com/images/I/61fDRIfPQEL.jpg",
+        "https://m.media-amazon.com/images/I/61fDRIfPQEL.jpg",
+        "https://m.media-amazon.com/images/I/61fDRIfPQEL.jpg",
       ],
     },
     {
@@ -554,6 +554,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 5. CHECKOUT PAGE
+  // 5. CHECKOUT PAGE
   if (currentPath === "checkout.html") {
     const checkoutForm = document.getElementById("checkout-form");
     const upiOverlay = document.getElementById("upi-payment-overlay");
@@ -561,6 +562,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const buyNowProductId = parseInt(params.get("buyNow"));
     let cartTotal = 0;
+
+    // ✅ Calculate total for Buy Now or Cart items
     if (buyNowProductId) {
       const product = allProducts.find((p) => p.id === buyNowProductId);
       if (product) cartTotal = product.dealPrice || product.price;
@@ -570,18 +573,27 @@ document.addEventListener("DOMContentLoaded", () => {
         return sum + (product.dealPrice || product.price) * item.quantity;
       }, 0);
     }
+
     if (checkoutForm && upiOverlay && confirmOrderBtn) {
+      // ✅ QR Code Generator
       const generateQRCode = (amount) => {
         const qrContainer = document.getElementById("qrcode-container");
         const amountDisplay = document.getElementById("qr-amount-display");
         qrContainer.innerHTML = "";
-        const yourUpiId = "your-upi-id@okhdfcbank";
+
+        // 🔑 Your BHIM UPI ID
+        const yourUpiId = "yashbhadane483-1@okicici";
+
         const upiLink = `upi://pay?pa=${yourUpiId}&pn=Chronix&am=${amount.toFixed(
           2
         )}&cu=INR`;
+
         new QRCode(qrContainer, { text: upiLink, width: 180, height: 180 });
+
         if (amountDisplay) amountDisplay.innerText = `₹${amount.toFixed(2)}`;
       };
+
+      // ✅ Place Order Function
       const placeOrder = () => {
         if (upiOverlay.classList.contains("show")) {
           upiOverlay.classList.remove("show");
@@ -596,15 +608,20 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.href = "confirmation.html";
         }, 2000);
       };
+
+      // ✅ Checkout Form Submission
       checkoutForm.addEventListener("submit", (e) => {
         e.preventDefault();
+
         if (cartTotal === 0) {
           showToast("Your cart is empty!", "error");
           return;
         }
+
         const selectedPayment = document.querySelector(
           'input[name="payment"]:checked'
         ).value;
+
         if (selectedPayment === "online") {
           generateQRCode(cartTotal);
           upiOverlay.classList.add("show");
@@ -612,6 +629,8 @@ document.addEventListener("DOMContentLoaded", () => {
           placeOrder();
         }
       });
+
+      // ✅ Confirm Button Click
       confirmOrderBtn.addEventListener("click", placeOrder);
     }
   }
