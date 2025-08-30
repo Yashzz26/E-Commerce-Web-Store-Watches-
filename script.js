@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- DATABASE (with full image galleries for every watch) ---
+  // --- DATABASE ---
   const allProducts = [
     {
       id: 1,
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       id: 6,
       name: "Rolex Submariner",
-      price: 1250000.0,
+      price: 12500.0,
       category: "Luxury",
       description:
         "The archetype of the diver's watch, a true icon. Unwavering reliability and timeless design.",
@@ -168,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         if (results.length > 0) {
           results.forEach((product) => {
-            // THIS IS THE FIX: Use product.imageGallery[0] instead of product.image
             searchResultsContainer.innerHTML += `<a href="product.html?id=${
               product.id
             }" class="search-result-item"><img src="${
@@ -255,9 +254,14 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <span class="rating-text">(${totalReviews})</span>
                                 </div>
                                 <p class="price">₹${p.price.toFixed(2)}</p>
-                                <a href="product.html?id=${
-                                  p.id
-                                }" class="view-details-btn">View Details</a>
+                                <div class="card-actions">
+                                    <button class="add-to-cart-btn-grid" data-id="${
+                                      p.id
+                                    }">Add to Cart</button>
+                                    <a href="product.html?id=${
+                                      p.id
+                                    }" class="view-details-btn">View Details</a>
+                                </div>
                             </div>
                         </div>`;
         });
@@ -284,6 +288,22 @@ document.addEventListener("DOMContentLoaded", () => {
         })
       );
       sortSelect.addEventListener("change", applyFiltersAndSort);
+
+      productGrid.addEventListener("click", (e) => {
+        if (e.target.classList.contains("add-to-cart-btn-grid")) {
+          const productId = parseInt(e.target.dataset.id);
+          const existingItem = cart.find((item) => item.id === productId);
+          if (existingItem) {
+            existingItem.quantity++;
+          } else {
+            cart.push({ id: productId, quantity: 1 });
+          }
+          saveCart();
+          updateCartCount();
+          showToast("Item added to cart!");
+        }
+      });
+
       applyFiltersAndSort();
     }
 
@@ -304,15 +324,18 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        document.getElementById("hours").innerText = hours
-          .toString()
-          .padStart(2, "0");
-        document.getElementById("minutes").innerText = minutes
-          .toString()
-          .padStart(2, "0");
-        document.getElementById("seconds").innerText = seconds
-          .toString()
-          .padStart(2, "0");
+        if (document.getElementById("hours"))
+          document.getElementById("hours").innerText = hours
+            .toString()
+            .padStart(2, "0");
+        if (document.getElementById("minutes"))
+          document.getElementById("minutes").innerText = minutes
+            .toString()
+            .padStart(2, "0");
+        if (document.getElementById("seconds"))
+          document.getElementById("seconds").innerText = seconds
+            .toString()
+            .padStart(2, "0");
       }, 1000);
     }
   }
@@ -332,11 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
             index + 1
           }" class="thumbnail-img ${index === 0 ? "active" : ""}">`;
         });
-        return `
-                    <div class="product-image-gallery">
-                        <div class="main-image-container"><img src="${mainImage}" alt="${product.name}" id="main-product-image"></div>
-                        <div class="thumbnail-container">${thumbnailsHTML}</div>
-                    </div>`;
+        return `<div class="product-image-gallery"><div class="main-image-container"><img src="${mainImage}" alt="${product.name}" id="main-product-image"></div><div class="thumbnail-container">${thumbnailsHTML}</div></div>`;
       };
 
       const renderProductInfo = () => {
@@ -349,7 +368,6 @@ document.addEventListener("DOMContentLoaded", () => {
               productReviews.length
             : 0;
         const totalReviews = productReviews.length;
-
         container.innerHTML = `
                     ${createImageGalleryHTML(product.imageGallery)}
                     <div class="product-info">
@@ -366,9 +384,14 @@ document.addEventListener("DOMContentLoaded", () => {
                           product.dealPrice || product.price
                         ).toFixed(2)}</p>
                         <p>${product.description}</p>
-                        <div class="product-actions"><button class="add-to-cart-btn" data-id="${
-                          product.id
-                        }">Add to Cart</button><a href="checkout.html" class="buy-now-btn">Buy Now</a></div>
+                        <div class="product-actions">
+                            <button class="add-to-cart-btn" data-id="${
+                              product.id
+                            }">Add to Cart</button>
+                            <a href="checkout.html?buyNow=${
+                              product.id
+                            }" class="buy-now-btn">Buy Now</a>
+                        </div>
                     </div>`;
 
         container
@@ -397,10 +420,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const reviewsList = document.getElementById("reviews-list");
       const reviewForm = document.getElementById("review-form");
       if (reviewsList && reviewForm) {
-        const starRatingInput = reviewForm.querySelector(".star-rating-input");
-        const ratingValueInput = reviewForm.querySelector("#rating-value");
-        const stars = starRatingInput.querySelectorAll("i");
-
+        const starRatingInput = reviewForm.querySelector(".star-rating-input"),
+          ratingValueInput = reviewForm.querySelector("#rating-value"),
+          stars = starRatingInput.querySelectorAll("i");
         const renderReviews = () => {
           reviewsList.innerHTML = "";
           const currentProductReviews = allReviews.filter(
@@ -420,7 +442,6 @@ document.addEventListener("DOMContentLoaded", () => {
             )}</span></div><p class="review-body">${review.text}</p></div>`;
           });
         };
-
         const updateStarDisplay = (rating) => {
           stars.forEach((star) => {
             star.classList.remove("fa-solid");
@@ -431,7 +452,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           });
         };
-
         starRatingInput.addEventListener("mouseover", (e) => {
           if (e.target.tagName === "I")
             updateStarDisplay(e.target.dataset.value);
@@ -445,7 +465,6 @@ document.addEventListener("DOMContentLoaded", () => {
             updateStarDisplay(ratingValueInput.value);
           }
         });
-
         reviewForm.addEventListener("submit", (e) => {
           e.preventDefault();
           const newReview = {
@@ -467,7 +486,6 @@ document.addEventListener("DOMContentLoaded", () => {
           renderProductInfo();
           renderReviews();
         });
-
         renderProductInfo();
         renderReviews();
       }
@@ -540,25 +558,55 @@ document.addEventListener("DOMContentLoaded", () => {
     const checkoutForm = document.getElementById("checkout-form");
     const upiOverlay = document.getElementById("upi-payment-overlay");
     const confirmOrderBtn = document.getElementById("confirm-order-btn");
+    const params = new URLSearchParams(window.location.search);
+    const buyNowProductId = parseInt(params.get("buyNow"));
+    let cartTotal = 0;
+    if (buyNowProductId) {
+      const product = allProducts.find((p) => p.id === buyNowProductId);
+      if (product) cartTotal = product.dealPrice || product.price;
+    } else {
+      cartTotal = cart.reduce((sum, item) => {
+        const product = allProducts.find((p) => p.id === item.id);
+        return sum + (product.dealPrice || product.price) * item.quantity;
+      }, 0);
+    }
     if (checkoutForm && upiOverlay && confirmOrderBtn) {
+      const generateQRCode = (amount) => {
+        const qrContainer = document.getElementById("qrcode-container");
+        const amountDisplay = document.getElementById("qr-amount-display");
+        qrContainer.innerHTML = "";
+        const yourUpiId = "your-upi-id@okhdfcbank";
+        const upiLink = `upi://pay?pa=${yourUpiId}&pn=Chronix&am=${amount.toFixed(
+          2
+        )}&cu=INR`;
+        new QRCode(qrContainer, { text: upiLink, width: 180, height: 180 });
+        if (amountDisplay) amountDisplay.innerText = `₹${amount.toFixed(2)}`;
+      };
       const placeOrder = () => {
         if (upiOverlay.classList.contains("show")) {
           upiOverlay.classList.remove("show");
         }
         showToast("Order Placed Successfully!", "success");
         setTimeout(() => {
-          cart = [];
-          saveCart();
+          if (!buyNowProductId) {
+            cart = [];
+            saveCart();
+          }
           updateCartCount();
           window.location.href = "confirmation.html";
         }, 2000);
       };
       checkoutForm.addEventListener("submit", (e) => {
         e.preventDefault();
+        if (cartTotal === 0) {
+          showToast("Your cart is empty!", "error");
+          return;
+        }
         const selectedPayment = document.querySelector(
           'input[name="payment"]:checked'
         ).value;
         if (selectedPayment === "online") {
+          generateQRCode(cartTotal);
           upiOverlay.classList.add("show");
         } else {
           placeOrder();
